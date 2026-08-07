@@ -2,6 +2,8 @@
 
 SUTD 51.512 Reinforcement Learning for Embodied AI — Project submission.
 
+**Repository:** https://github.com/FlyGCB/RL-Project
+
 ## 1. Environment setup
 
 - Python 3.10 (tested on 3.10.11, a plain python.org install — **not** a conda

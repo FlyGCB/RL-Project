@@ -10,6 +10,11 @@
 | Manan Bimal Mehta | 1010949 | Designed and implemented Levels 1–3 (tabular Q-learning, SARSA, and Expected SARSA agents; exploration-schedule comparison; opponent-zoo robustness evaluation) and Level 4 (Feature-DQN and CNN-DQN pixel-based agents vs. scripted opponents), including all training, evaluation, and baseline comparisons for these levels. |
 | Zheng Chengsheng | 1010719 | Wrote and verified the final project report, consolidating results and figures across all five levels, cross-checking reported metrics against the actual notebook/training outputs, and compiling the reproducibility documentation. |
 
+**Full code, notebooks, and saved checkpoints:** https://github.com/FlyGCB/RL-Project
+(see `README.md` in the repository for reproduction instructions — several
+saved-agent checkpoints are tens of MB and are hosted there rather than
+attached directly to this report.)
+
 ---
 
 ## 1. Introduction
