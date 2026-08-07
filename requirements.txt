@@ -1,0 +1,7 @@
+numpy
+matplotlib
+ipython
+nbformat
+python-docx
+pygame
+torch

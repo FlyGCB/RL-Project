@@ -1,0 +1,28 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Smoke-test byproducts: duplicate checkpoints and intermediate animation
+# data from verifying the Level 5 training pipeline before the full run.
+# Not part of the graded deliverable - the real checkpoints are in
+# saved_agents/*.pt directly, and the real replay animations are embedded
+# in the Level 5 notebooks themselves.
+saved_agents/smoketest_evidence/
+logs/replay_regen.json
+
+# Blank official course templates, never modified - the actual work lives in
+# the descriptively-named notebooks (Level_1_..., Level_5_..., etc.) in the
+# same folder, which ARE tracked.
+notebooks/Level 1 — Starter Notebook.ipynb
+notebooks/Level 2 — Starter Notebook.ipynb
+notebooks/Level 3 — Starter Notebook.ipynb
+notebooks/Level 4 — Starter Notebook.ipynb
+notebooks/Level 5 — Starter Notebook.ipynb
+
+# Course-provided assignment brief, not our work product.
+Project_Instructions_51_512.docx
+Project_Instructions_51_512.pdf
+
+# Internal working note for handing this project off between Claude Code
+# sessions on different machines - not project content.
+LEVEL5_HANDOFF.md

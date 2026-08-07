@@ -1,0 +1,384 @@
+<title>Level 5 Self-Play — Training Curves &amp; Diagnosis</title>
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --series-5a:      #2a78d6;
+    --series-5b:      #eb6834;
+    --good:           #006300;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --series-5a:      #3987e5;
+      --series-5b:      #d95926;
+      --good:           #0ca30c;
+    }
+  }
+  :root[data-theme="dark"] .viz-root {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --page:           #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --grid:           #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --series-5a:      #3987e5;
+    --series-5b:      #d95926;
+    --good:           #0ca30c;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .viz-root {
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding: 32px 20px 64px;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .subtitle { color: var(--text-secondary); font-size: 14px; margin: 0 0 28px; max-width: 720px; line-height: 1.5; }
+  h2 { font-size: 17px; margin: 40px 0 4px; }
+  .section-note { color: var(--text-secondary); font-size: 13px; margin: 0 0 16px; max-width: 760px; line-height: 1.5; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 16px 8px;
+    overflow-x: auto;
+  }
+  .card h3 { font-size: 13px; font-weight: 600; margin: 0 0 2px; }
+  .card .card-sub { font-size: 11px; color: var(--text-muted); margin: 0 0 8px; }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); margin: 4px 0 4px 4px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .gridline { stroke: var(--grid); stroke-width: 1; }
+  .baseline { stroke: var(--baseline); stroke-width: 1; }
+  .axis-label { fill: var(--text-muted); font-size: 10.5px; }
+  .series-line { fill: none; stroke-width: 2; }
+  .series-dot { stroke: var(--surface-1); stroke-width: 1.5; }
+  .hover-line { stroke: var(--text-muted); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0; pointer-events: none; }
+  .tooltip {
+    position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.08s;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 10px; font-size: 11.5px; color: var(--text-primary); box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    white-space: nowrap; z-index: 5;
+  }
+  .tooltip .t-row { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+  .tooltip .t-row i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+  .tooltip .t-ep { color: var(--text-muted); font-size: 11px; }
+  .chart-holder { position: relative; }
+
+  .callout {
+    background: var(--surface-1); border: 1px solid var(--border); border-left: 3px solid var(--series-5b);
+    border-radius: 8px; padding: 14px 16px; font-size: 13.5px; line-height: 1.6; color: var(--text-primary);
+    margin: 16px 0;
+  }
+  .callout b { font-weight: 600; }
+  .callout.good { border-left-color: var(--good); }
+
+  table.evaltable { border-collapse: collapse; width: 100%; font-size: 13px; margin: 8px 0 4px; }
+  table.evaltable caption { text-align: left; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; caption-side: top; }
+  table.evaltable th, table.evaltable td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--grid); }
+  table.evaltable th { color: var(--text-secondary); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.02em; }
+  table.evaltable td.num, table.evaltable th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  table.evaltable td.better { color: var(--good); font-weight: 600; }
+  table.evaltable td.worse { color: var(--series-5b); font-weight: 600; }
+
+  .meta { font-size: 12px; color: var(--text-muted); margin-top: 48px; border-top: 1px solid var(--grid); padding-top: 12px; }
+</style>
+
+<div class="viz-root">
+  <div class="wrap">
+    <h1>Level 5 Self-Play — Training Curves &amp; Diagnosis</h1>
+    <p class="subtitle">
+      Full-scale training (1500 episodes each, 5A fixed-opponent baseline → 5B self-play with an 8-slot opponent pool),
+      run on the RTX 3070&nbsp;Ti box. Curves are reconstructed from the training console log's periodic summaries
+      (printed every 100 episodes, each point itself a 100-episode rolling average against that window's mix of live-mirror
+      / pool opponents — not the frozen-L4 benchmark score). Episode&nbsp;1 is a single-episode point, not a 100-episode
+      average, and is omitted here to avoid a misleading spike.
+    </p>
+
+    <h2>Feature-DQN</h2>
+    <p class="section-note">
+      5A trains against the frozen Level 4 model only. 5B warm-starts from 5A and switches to self-play
+      (80% live mirror / 20% opponent-pool snapshot).
+    </p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Win rate vs. training-time opponent</h3>
+        <p class="card-sub">100-episode rolling average, per stage</p>
+        <div class="legend">
+          <span><i style="background:var(--series-5a)"></i>5A</span>
+          <span><i style="background:var(--series-5b)"></i>5B (self-play)</span>
+        </div>
+        <div class="chart-holder"><svg id="feat-winrate" viewBox="0 0 480 260"></svg><div class="tooltip" id="feat-winrate-tip"></div></div>
+      </div>
+      <div class="card">
+        <h3>Episode reward</h3>
+        <p class="card-sub">100-episode rolling average, per stage</p>
+        <div class="legend">
+          <span><i style="background:var(--series-5a)"></i>5A</span>
+          <span><i style="background:var(--series-5b)"></i>5B (self-play)</span>
+        </div>
+        <div class="chart-holder"><svg id="feat-reward" viewBox="0 0 480 260"></svg><div class="tooltip" id="feat-reward-tip"></div></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <b>Diagnosis — Feature-DQN 5B collapses mid-training.</b> Win rate against its own training-time opponents climbs
+      cleanly through the first third of 5B, peaking at <b>81%</b> around episode&nbsp;500, then erodes almost monotonically
+      to <b>27%</b> by episode&nbsp;1400 before a small uptick at 1500. Reward tracks the same arc (peak ≈8.0 at ep.&nbsp;500 →
+      trough ≈2.7 at ep.&nbsp;1400). Training stopped at episode 1500 — mid-decline, not at a stable endpoint — which is why
+      the final 5B checkpoint loses to frozen&nbsp;L4 (24%) and even to its own 5A checkpoint (44% head-to-head), despite 5A
+      alone beating frozen&nbsp;L4 54% of the time. This is the classic self-play non-stationarity failure the notebook's
+      opponent pool was meant to dampen — the pool visibly slowed but did not prevent it (self-mirror match stayed a
+      non-degenerate 20/80 split rather than collapsing to 0–0 draws, so the agent didn't go fully inert, it just kept
+      chasing a moving target). The practical read: 1500 episodes landed in a bad phase of an oscillating dynamic, not at
+      convergence.
+    </div>
+
+    <h2>CNN-DQN</h2>
+    <p class="section-note">
+      Same 5A → 5B design as Feature-DQN, pixel input instead of hand-built features.
+    </p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Win rate vs. training-time opponent</h3>
+        <p class="card-sub">100-episode rolling average, per stage</p>
+        <div class="legend">
+          <span><i style="background:var(--series-5a)"></i>5A</span>
+          <span><i style="background:var(--series-5b)"></i>5B (self-play)</span>
+        </div>
+        <div class="chart-holder"><svg id="cnn-winrate" viewBox="0 0 480 260"></svg><div class="tooltip" id="cnn-winrate-tip"></div></div>
+      </div>
+      <div class="card">
+        <h3>Episode reward</h3>
+        <p class="card-sub">100-episode rolling average, per stage</p>
+        <div class="legend">
+          <span><i style="background:var(--series-5a)"></i>5A</span>
+          <span><i style="background:var(--series-5b)"></i>5B (self-play)</span>
+        </div>
+        <div class="chart-holder"><svg id="cnn-reward" viewBox="0 0 480 260"></svg><div class="tooltip" id="cnn-reward-tip"></div></div>
+      </div>
+    </div>
+
+    <div class="callout good">
+      <b>Contrast — CNN-DQN 5B improves steadily, no collapse.</b> Win rate dips through the noisy middle third
+      (episodes 500–800, driven by opponent-pool snapshots getting harder as the pool fills) then climbs through the
+      back half to <b>77%</b> by episode 1500 — still rising when training stopped, no sign of the Feature-DQN pattern.
+      The much larger CNN capacity (conv stack vs. a 12-dim feature MLP) likely gives it a more stable self-play
+      trajectory: more room to represent a robust policy rather than overfitting to whichever opponent it saw most
+      recently.
+    </div>
+
+    <h2>Final evaluation — 5A vs. 5B, same fixed benchmarks</h2>
+    <p class="section-note">50-episode evaluation, level=5, max_seconds=30. Green = better of the pair, orange = worse.</p>
+
+    <div class="grid-2">
+      <div class="card" style="padding-bottom:16px;">
+        <table class="evaltable">
+          <caption>Feature-DQN</caption>
+          <thead><tr><th>Opponent</th><th class="num">5A win rate</th><th class="num">5B win rate</th></tr></thead>
+          <tbody>
+            <tr><td>Frozen L4</td><td class="num better">0.54</td><td class="num worse">0.24</td></tr>
+            <tr><td>Random</td><td class="num better">0.48</td><td class="num worse">0.28</td></tr>
+            <tr><td>Tracking</td><td class="num">0.98</td><td class="num">0.98</td></tr>
+            <tr><td>5B vs 5A head-to-head</td><td class="num better">0.56</td><td class="num worse">0.44</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" style="padding-bottom:16px;">
+        <table class="evaltable">
+          <caption>CNN-DQN</caption>
+          <thead><tr><th>Opponent</th><th class="num">5A win rate</th><th class="num">5B win rate</th></tr></thead>
+          <tbody>
+            <tr><td>Frozen L4</td><td class="num worse">0.20</td><td class="num better">0.72</td></tr>
+            <tr><td>Random</td><td class="num worse">0.46</td><td class="num better">0.98</td></tr>
+            <tr><td>Tracking (right)</td><td class="num worse">0.02</td><td class="num better">0.80</td></tr>
+            <tr><td>5B vs 5A head-to-head</td><td class="num worse">0.14</td><td class="num better">0.86</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="meta">
+      Source: <code>smoketest_logs\feature_dqn_FULL_TRAIN_log.txt</code> and
+      <code>smoketest_logs\cnn_dqn_FULL_TRAIN_log.txt</code>, RTX 3070 Ti run.
+      Feature-DQN total wall time ≈79 min (5A 2381s + 5B 2384s). CNN-DQN total wall time ≈161 min (5A 3225s + 5B 6431s).
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const palette = { a: 'var(--series-5a)', b: 'var(--series-5b)' };
+
+  const episodes = [100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500];
+
+  const data = {
+    'feat-winrate': {
+      unit: '', decimals: 2, ymax: 1.0,
+      a: [0.170,0.230,0.230,0.190,0.280,0.250,0.250,0.250,0.330,0.260,0.430,0.330,0.440,0.410,0.340],
+      b: [0.370,0.670,0.650,0.640,0.810,0.750,0.710,0.670,0.500,0.570,0.640,0.500,0.410,0.270,0.300],
+    },
+    'feat-reward': {
+      unit: '', decimals: 2, ymax: null,
+      a: [1.658,2.258,2.258,1.850,2.744,2.422,2.433,2.413,3.236,2.528,4.221,3.240,4.338,4.037,3.329],
+      b: [3.642,6.327,6.433,6.330,8.042,7.434,6.540,6.250,4.771,5.564,6.162,4.972,4.075,2.676,2.973],
+    },
+    'cnn-winrate': {
+      unit: '', decimals: 2, ymax: 1.0,
+      a: [0.110,0.140,0.110,0.210,0.150,0.160,0.100,0.090,0.150,0.170,0.120,0.310,0.280,0.210,0.260],
+      b: [0.410,0.430,0.470,0.430,0.380,0.350,0.320,0.360,0.490,0.430,0.430,0.570,0.620,0.680,0.770],
+    },
+    'cnn-reward': {
+      unit: '', decimals: 2, ymax: null,
+      a: [0.558,0.553,0.349,1.658,1.465,1.369,0.867,0.659,1.370,1.365,1.065,1.944,2.248,1.346,1.537],
+      b: [3.453,2.230,3.135,3.018,3.452,2.443,2.646,2.737,3.722,3.137,3.442,4.347,4.133,3.335,2.130],
+    },
+  };
+
+  const W = 480, H = 260;
+  const padL = 34, padR = 12, padT = 10, padB = 26;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+
+  function niceMax(v) {
+    if (v <= 0) return 1;
+    const mag = Math.pow(10, Math.floor(Math.log10(v)));
+    const norm = v / mag;
+    let step;
+    if (norm <= 1) step = 1; else if (norm <= 2) step = 2; else if (norm <= 5) step = 5; else step = 10;
+    return step * mag;
+  }
+
+  function buildChart(id) {
+    const cfg = data[id];
+    const svg = document.getElementById(id);
+    const tip = document.getElementById(id + '-tip');
+    const holder = svg.parentElement;
+
+    const xMin = episodes[0], xMax = episodes[episodes.length - 1];
+    let yMax = cfg.ymax;
+    if (!yMax) {
+      const rawMax = Math.max(...cfg.a, ...cfg.b);
+      yMax = niceMax(rawMax * 1.12);
+    }
+    const yMin = 0;
+
+    function xPix(ep) { return padL + ((ep - xMin) / (xMax - xMin)) * plotW; }
+    function yPix(v) { return padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH; }
+
+    const ns = 'http://www.w3.org/2000/svg';
+    function el(tag, attrs) {
+      const e = document.createElementNS(ns, tag);
+      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      return e;
+    }
+
+    // gridlines (4 bands)
+    const gridSteps = 4;
+    for (let i = 0; i <= gridSteps; i++) {
+      const v = yMin + (yMax - yMin) * (i / gridSteps);
+      const y = yPix(v);
+      svg.appendChild(el('line', { x1: padL, x2: W - padR, y1: y, y2: y, class: i === 0 ? 'baseline' : 'gridline' }));
+      const label = el('text', { x: padL - 6, y: y + 3, class: 'axis-label', 'text-anchor': 'end' });
+      label.textContent = cfg.decimals === 2 && yMax <= 1 ? v.toFixed(2) : (Number.isInteger(v) ? v : v.toFixed(1));
+      svg.appendChild(label);
+    }
+
+    // x axis ticks (episode 100, 500, 1000, 1500)
+    [100, 500, 1000, 1500].forEach(ep => {
+      const x = xPix(ep);
+      const label = el('text', { x: x, y: H - 6, class: 'axis-label', 'text-anchor': 'middle' });
+      label.textContent = ep;
+      svg.appendChild(label);
+    });
+
+    function pathFor(values) {
+      return values.map((v, i) => (i === 0 ? 'M' : 'L') + xPix(episodes[i]) + ' ' + yPix(v)).join(' ');
+    }
+
+    const lineA = el('path', { d: pathFor(cfg.a), class: 'series-line', stroke: palette.a, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+    const lineB = el('path', { d: pathFor(cfg.b), class: 'series-line', stroke: palette.b, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+    svg.appendChild(lineA);
+    svg.appendChild(lineB);
+
+    const dotsA = [], dotsB = [];
+    cfg.a.forEach((v, i) => {
+      const d = el('circle', { cx: xPix(episodes[i]), cy: yPix(v), r: 3, fill: palette.a, class: 'series-dot' });
+      svg.appendChild(d); dotsA.push(d);
+    });
+    cfg.b.forEach((v, i) => {
+      const d = el('circle', { cx: xPix(episodes[i]), cy: yPix(v), r: 3, fill: palette.b, class: 'series-dot' });
+      svg.appendChild(d); dotsB.push(d);
+    });
+
+    const hoverLine = el('line', { x1: 0, x2: 0, y1: padT, y2: padT + plotH, class: 'hover-line' });
+    svg.appendChild(hoverLine);
+
+    const hitRect = el('rect', { x: padL, y: padT, width: plotW, height: plotH, fill: 'transparent' });
+    svg.appendChild(hitRect);
+
+    function nearestIndex(mouseX) {
+      const frac = (mouseX - padL) / plotW;
+      const ep = xMin + frac * (xMax - xMin);
+      let best = 0, bestDist = Infinity;
+      episodes.forEach((e, i) => { const d = Math.abs(e - ep); if (d < bestDist) { bestDist = d; best = i; } });
+      return best;
+    }
+
+    hitRect.addEventListener('mousemove', (evt) => {
+      const rect = svg.getBoundingClientRect();
+      const mouseX = ((evt.clientX - rect.left) / rect.width) * W;
+      const idx = nearestIndex(mouseX);
+      const ex = xPix(episodes[idx]);
+      hoverLine.setAttribute('x1', ex); hoverLine.setAttribute('x2', ex); hoverLine.style.opacity = 1;
+
+      [dotsA, dotsB].forEach(dots => dots.forEach((d, i) => d.setAttribute('r', i === idx ? 4.5 : 3)));
+
+      tip.innerHTML =
+        '<div class="t-ep">Episode ' + episodes[idx] + '</div>' +
+        '<div class="t-row"><i style="background:' + palette.a + '"></i>5A: ' + cfg.a[idx].toFixed(cfg.decimals) + '</div>' +
+        '<div class="t-row"><i style="background:' + palette.b + '"></i>5B: ' + cfg.b[idx].toFixed(cfg.decimals) + '</div>';
+      tip.style.opacity = 1;
+      const holderRect = holder.getBoundingClientRect();
+      let left = (evt.clientX - holderRect.left) + 14;
+      let top = (evt.clientY - holderRect.top) - 10;
+      if (left + 140 > holderRect.width) left = (evt.clientX - holderRect.left) - 150;
+      tip.style.left = left + 'px';
+      tip.style.top = top + 'px';
+    });
+
+    hitRect.addEventListener('mouseleave', () => {
+      hoverLine.style.opacity = 0;
+      tip.style.opacity = 0;
+      [dotsA, dotsB].forEach(dots => dots.forEach(d => d.setAttribute('r', 3)));
+    });
+  }
+
+  Object.keys(data).forEach(buildChart);
+})();
+</script>

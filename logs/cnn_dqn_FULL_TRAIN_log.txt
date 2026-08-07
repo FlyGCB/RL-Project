@@ -1,0 +1,167 @@
+﻿python : C:\SUTD\Project Starter Code_new\level5_cnn_dqn_train_full.py:298: FutureWarning: You are using `torch.load` 
+with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible 
+to construct malicious pickle data which will execute arbitrary code during unpickling (See 
+https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the 
+default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during 
+unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly 
+allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` 
+for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues 
+related to this experimental feature.
+At line:4 char:1
++ python level5_cnn_dqn_train_full.py *> "smoketest_logs\cnn_dqn_FULL_T ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\SUTD\Project...mental feature.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  checkpoint = torch.load(path, map_location=device)
+C:\SUTD\Project Starter Code_new\level5_cnn_dqn_train_full.py:504: UserWarning: FigureCanvasAgg is non-interactive, 
+and thus cannot be shown
+  plt.show()
+C:\SUTD\Project Starter Code_new\level5_cnn_dqn_train_full.py:298: FutureWarning: You are using `torch.load` with 
+`weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to 
+construct malicious pickle data which will execute arbitrary code during unpickling (See 
+https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the 
+default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during 
+unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly 
+allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` 
+for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues 
+related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+PyTorch version: 2.5.1+cu121
+Device: cuda
+GPU: NVIDIA GeForce RTX 3070 Ti
+Loaded frozen Level 4 opponent: Level 4 CNN-DQN
+Environment steps at save time: 500379
+Episode    1/1500 | reward= -0.114 | win_rate= 1.000 | epsilon= 1.000 | opponent=pool | buffer=   450
+Episode  100/1500 | reward=  0.558 | win_rate= 0.110 | epsilon= 1.000 | opponent=pool | buffer= 11552
+Episode  200/1500 | reward=  0.553 | win_rate= 0.140 | epsilon= 1.000 | opponent=pool | buffer= 25287
+Episode  300/1500 | reward=  0.349 | win_rate= 0.110 | epsilon= 0.474 | opponent=pool | buffer= 30000
+Episode  400/1500 | reward=  1.658 | win_rate= 0.210 | epsilon= 0.262 | opponent=pool | buffer= 30000
+Episode  500/1500 | reward=  1.465 | win_rate= 0.150 | epsilon= 0.150 | opponent=pool | buffer= 30000
+Episode  600/1500 | reward=  1.369 | win_rate= 0.160 | epsilon= 0.091 | opponent=pool | buffer= 30000
+Episode  700/1500 | reward=  0.867 | win_rate= 0.100 | epsilon= 0.057 | opponent=pool | buffer= 30000
+Episode  800/1500 | reward=  0.659 | win_rate= 0.090 | epsilon= 0.050 | opponent=pool | buffer= 30000
+Episode  900/1500 | reward=  1.370 | win_rate= 0.150 | epsilon= 0.050 | opponent=pool | buffer= 30000
+Episode 1000/1500 | reward=  1.365 | win_rate= 0.170 | epsilon= 0.050 | opponent=pool | buffer= 30000
+Episode 1100/1500 | reward=  1.065 | win_rate= 0.120 | epsilon= 0.050 | opponent=pool | buffer= 30000
+Episode 1200/1500 | reward=  1.944 | win_rate= 0.310 | epsilon= 0.050 | opponent=pool | buffer= 30000
+Episode 1300/1500 | reward=  2.248 | win_rate= 0.280 | epsilon= 0.050 | opponent=pool | buffer= 30000
+Episode 1400/1500 | reward=  1.346 | win_rate= 0.210 | epsilon= 0.050 | opponent=pool | buffer= 30000
+Episode 1500/1500 | reward=  1.537 | win_rate= 0.260 | epsilon= 0.050 | opponent=pool | buffer= 30000
+
+5A training complete.
+Time: 3225.0 seconds
+Environment steps: 198,824
+Optimization steps: 48,457
+
+===== Level 5A CNN-DQN =====
+
+vs frozen L4 (agent=left)
+  left_win_rate: 0.2000
+  right_win_rate: 0.8000
+  draw_rate: 0.0000
+  mean_left_score: 1.7203
+  mean_right_score: 7.7087
+  mean_steps: 256.2400
+
+vs Random (agent=left)
+  left_win_rate: 0.4600
+  right_win_rate: 0.5400
+  draw_rate: 0.0000
+  mean_left_score: 4.5651
+  mean_right_score: 5.3358
+  mean_steps: 131.4200
+
+vs Tracking (agent=right)
+  left_win_rate: 0.9800
+  right_win_rate: 0.0200
+  draw_rate: 0.0000
+  mean_left_score: 9.3906
+  mean_right_score: 0.0946
+  mean_steps: 287.6200
+Saved 5A agent to: C:\SUTD\Project Starter Code_new\saved_agents\cnn_dqn_level5_5a.pt
+Episode    1/1500 | reward=  9.979 | win_rate= 1.000 | epsilon= 0.295 | opponent=live | buffer=   103
+Episode  100/1500 | reward=  3.453 | win_rate= 0.410 | epsilon= 0.050 | opponent=pool | buffer= 15441
+Episode  200/1500 | reward=  2.230 | win_rate= 0.430 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode  300/1500 | reward=  3.135 | win_rate= 0.470 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode  400/1500 | reward=  3.018 | win_rate= 0.430 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode  500/1500 | reward=  3.452 | win_rate= 0.380 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode  600/1500 | reward=  2.443 | win_rate= 0.350 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode  700/1500 | reward=  2.646 | win_rate= 0.320 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode  800/1500 | reward=  2.737 | win_rate= 0.360 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode  900/1500 | reward=  3.722 | win_rate= 0.490 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode 1000/1500 | reward=  3.137 | win_rate= 0.430 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode 1100/1500 | reward=  3.442 | win_rate= 0.430 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode 1200/1500 | reward=  4.347 | win_rate= 0.570 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode 1300/1500 | reward=  4.133 | win_rate= 0.620 | epsilon= 0.050 | opponent=pool | buffer= 30000
+Episode 1400/1500 | reward=  3.335 | win_rate= 0.680 | epsilon= 0.050 | opponent=live | buffer= 30000
+Episode 1500/1500 | reward=  2.130 | win_rate= 0.770 | epsilon= 0.050 | opponent=live | buffer= 30000
+
+5B training complete.
+Time: 6430.7 seconds
+Environment steps: 522,814
+Optimization steps: 128,205
+Final opponent pool size: 8
+Fraction of episodes played against the live mirror: 0.799 (target ~0.8)
+
+===== Level 5B CNN-DQN (self-play) =====
+
+vs frozen L4 (agent=left)
+  left_win_rate: 0.7200
+  right_win_rate: 0.2800
+  draw_rate: 0.0000
+  mean_left_score: 6.4910
+  mean_right_score: 2.0654
+  mean_steps: 548.2000
+
+vs Random (agent=left)
+  left_win_rate: 0.9800
+  right_win_rate: 0.0200
+  draw_rate: 0.0000
+  mean_left_score: 9.5801
+  mean_right_score: 0.1195
+  mean_steps: 169.1200
+
+vs Tracking (agent=right)
+  left_win_rate: 0.8000
+  right_win_rate: 0.2000
+  draw_rate: 0.0000
+  mean_left_score: 6.6099
+  mean_right_score: 1.8789
+  mean_steps: 494.6600
+
+5B (left) vs 5A (right) head-to-head:
+  left_win_rate: 0.8600
+  right_win_rate: 0.1400
+  draw_rate: 0.0000
+  mean_left_score: 8.5631
+  mean_right_score: 1.2920
+
+5B vs itself (mirror match, sanity check for degenerate draws):
+  left_win_rate: 0.4200
+  right_win_rate: 0.5800
+  draw_rate: 0.0000
+  mean_left_score: 4.1202
+  mean_right_score: 5.6909
+opponent | 5A win_rate | 5B win_rate | 5A mean_score | 5B mean_score
+--------------------------------------------------------------------
+vs frozen L4 (agent=left) | 0.2000 | 0.7200 | 1.7203 | 6.4910
+vs Random (agent=left) | 0.4600 | 0.9800 | 4.5651 | 9.5801
+vs Tracking (agent=right) | 0.0200 | 0.2000 | 0.0946 | 1.8789
+Saved final Level 5 CNN-DQN agent to: C:\SUTD\Project Starter Code_new\saved_agents\cnn_dqn_level5_selfplay.pt
+Reloaded: Level 5B CNN-DQN (self-play) | environment steps: 522814 | optimization steps: 128205
+Reloaded 5B agent vs frozen L4:
+  left_win_rate: 0.5500
+  right_win_rate: 0.4500
+  draw_rate: 0.0000
+  mean_left_score: 2.9178
+  mean_right_score: 2.8911
+===== 5B (left) vs frozen L4 (right) replay =====
+LEFT (5B) action counts: {'UP': 96, 'DOWN': 68, 'STAY': 36}
+RIGHT (frozen L4) action counts: {'UP': 77, 'DOWN': 79, 'STAY': 44}
+Left total reward: 9.956
+Right total reward: -0.09600000000000011
+Winner: left
+
+FULL TRAINING RUN COMPLETE
+CNN_DQN_EXIT=0

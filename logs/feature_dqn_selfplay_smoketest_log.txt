@@ -1,0 +1,138 @@
+﻿python : C:\SUTD\Project Starter Code_new\level5_feature_dqn_selfplay_smoketest.py:261: FutureWarning: You are using 
+`torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. 
+It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See 
+https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the 
+default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during 
+unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly 
+allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` 
+for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues 
+related to this experimental feature.
+At line:3 char:1
++ python level5_feature_dqn_selfplay_smoketest.py *> "smoketest_logs\fe ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\SUTD\Project...mental feature.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  checkpoint = torch.load(path, map_location=device)
+C:\SUTD\Project Starter Code_new\level5_feature_dqn_selfplay_smoketest.py:465: UserWarning: FigureCanvasAgg is 
+non-interactive, and thus cannot be shown
+  plt.show()
+C:\SUTD\Project Starter Code_new\level5_feature_dqn_selfplay_smoketest.py:261: FutureWarning: You are using 
+`torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. 
+It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See 
+https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the 
+default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during 
+unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly 
+allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` 
+for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues 
+related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+PyTorch version: 2.5.1+cu121
+Device: cuda
+GPU: NVIDIA GeForce RTX 3070 Ti
+Feature dimension: 12
+Loaded frozen Level 4 opponent: Level 4 Feature DQN
+Environment steps at save time: 305564
+Episode    1/30 | reward= 10.000 | win_rate= 1.000 | epsilon= 1.000 | opponent=pool | buffer=    87
+
+5A training complete.
+Time: 43.1 seconds
+Environment steps: 3,844
+Optimization steps: 837
+
+===== Level 5A Feature-DQN =====
+
+vs frozen L4 (agent=left)
+  left_win_rate: 0.2000
+  right_win_rate: 0.8000
+  draw_rate: 0.0000
+  mean_left_score: 1.9808
+  mean_right_score: 8.0000
+  mean_steps: 49.2000
+
+vs Random (agent=left)
+  left_win_rate: 0.4000
+  right_win_rate: 0.6000
+  draw_rate: 0.0000
+  mean_left_score: 3.9496
+  mean_right_score: 5.9162
+  mean_steps: 177.8000
+
+vs Tracking (agent=right)
+  left_win_rate: 1.0000
+  right_win_rate: 0.0000
+  draw_rate: 0.0000
+  mean_left_score: 10.0224
+  mean_right_score: 0.0000
+  mean_steps: 87.2000
+Saved 5A agent to: C:\SUTD\Project Starter Code_new\saved_agents\smoketest_evidence\feature_dqn_level5_5a_smoketest.pt
+Episode    1/30 | reward= -0.126 | win_rate= 0.000 | epsilon= 0.262 | opponent=live | buffer=   450
+
+5B training complete.
+Time: 30.7 seconds
+Environment steps: 6,401
+Optimization steps: 1,352
+Final opponent pool size: 4
+Fraction of episodes played against the live mirror: 0.833 (target ~0.8)
+
+===== Level 5B Feature-DQN (self-play) =====
+
+vs frozen L4 (agent=left)
+  left_win_rate: 0.4000
+  right_win_rate: 0.6000
+  draw_rate: 0.0000
+  mean_left_score: 3.9732
+  mean_right_score: 6.0240
+  mean_steps: 140.2000
+
+vs Random (agent=left)
+  left_win_rate: 0.6000
+  right_win_rate: 0.4000
+  draw_rate: 0.0000
+  mean_left_score: 6.0034
+  mean_right_score: 3.9326
+  mean_steps: 152.4000
+
+vs Tracking (agent=right)
+  left_win_rate: 1.0000
+  right_win_rate: 0.0000
+  draw_rate: 0.0000
+  mean_left_score: 10.0224
+  mean_right_score: -0.0012
+  mean_steps: 87.2000
+
+5B (left) vs 5A (right) head-to-head:
+  left_win_rate: 0.4000
+  right_win_rate: 0.6000
+  draw_rate: 0.0000
+  mean_left_score: 3.9732
+  mean_right_score: 6.0240
+
+5B vs itself (mirror match, sanity check for degenerate draws):
+  left_win_rate: 0.4000
+  right_win_rate: 0.6000
+  draw_rate: 0.0000
+  mean_left_score: 3.9664
+  mean_right_score: 5.9904
+opponent | 5A win_rate | 5B win_rate | 5A mean_score | 5B mean_score
+--------------------------------------------------------------------
+vs frozen L4 (agent=left) | 0.2000 | 0.4000 | 1.9808 | 3.9732
+vs Random (agent=left) | 0.4000 | 0.6000 | 3.9496 | 6.0034
+vs Tracking (agent=right) | 0.0000 | 0.0000 | 0.0000 | -0.0012
+Saved final Level 5 Feature-DQN agent to: C:\SUTD\Project Starter Code_new\saved_agents\smoketest_evidence\feature_dqn_level5_selfplay_smoketest.pt
+Reloaded: Level 5B Feature DQN (self-play) | environment steps: 6401 | optimization steps: 1352
+Reloaded 5B agent vs frozen L4:
+  left_win_rate: 0.1500
+  right_win_rate: 0.8500
+  draw_rate: 0.0000
+  mean_left_score: 1.4857
+  mean_right_score: 8.5021
+===== 5B (left) vs frozen L4 (right) replay =====
+LEFT (5B) action counts: {'STAY': 31, 'DOWN': 6}
+RIGHT (frozen L4) action counts: {'STAY': 37}
+Left total reward: -0.006
+Right total reward: 10.0
+Winner: right
+animate_duel_episode ran without error: True
+
+SMOKE TEST PASSED
