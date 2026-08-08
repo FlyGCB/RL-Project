@@ -4,6 +4,13 @@ SUTD 51.512 Reinforcement Learning for Embodied AI — Project submission.
 
 **Repository:** https://github.com/FlyGCB/RL-Project
 
+**Official report: `Final_Project_Report.pdf`** (covers all five levels,
+including Level 5 self-play). `report.md` / `report.pdf` are an earlier
+working draft kept in this repo for provenance — every number in them was
+individually cross-checked against the real notebook/training-log outputs
+during drafting — but `Final_Project_Report.pdf` is the one that was
+submitted and consolidated by the team.
+
 ## 1. Environment setup
 
 - Python 3.10 (tested on 3.10.11, a plain python.org install — **not** a conda
@@ -44,7 +51,8 @@ paddle_duel_env.py           Fixed environment (do not modify) — provided by t
 student_agent_template.py    BaseAgent-compatible template for a submittable agent
 requirements.txt
 README.md
-report.md / report.pdf
+Final_Project_Report.pdf      Official submitted report (all 5 levels)
+report.md / report.pdf        Earlier working draft, kept for provenance (see note above)
 notebooks/
   0. Paddle Duel RL Arena - Environment Walkthrough and Project Intro.ipynb
   Level_1_Qlearning_SARSA_ExpectedSARSA_Comparison.ipynb
